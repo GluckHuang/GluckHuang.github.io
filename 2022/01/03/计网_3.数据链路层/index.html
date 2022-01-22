@@ -1,0 +1,836 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="说明：部分图源自B站—计算机网络微课堂，侵删 第三章 数据链路层3.1 数据链路层概述 总结：  数据链路层在网络体系结构中的地位 使用点对点信道的数据链路层 三个重要问题：封装成帧、差错检测、可靠传输   使用广播信道的数据链路层 共享式以太网的媒体接入控制协议CSMA&#x2F;CD 802.11局域网的媒体接入控制协议CSMA&#x2F;CA   数据链路层的互连设备 网桥和交换机的工作原理 集线器（物理层互连">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机网络——数据链路层">
+<meta property="og:url" content="http://example.com/2022/01/03/%E8%AE%A1%E7%BD%91_3.%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="说明：部分图源自B站—计算机网络微课堂，侵删 第三章 数据链路层3.1 数据链路层概述 总结：  数据链路层在网络体系结构中的地位 使用点对点信道的数据链路层 三个重要问题：封装成帧、差错检测、可靠传输   使用广播信道的数据链路层 共享式以太网的媒体接入控制协议CSMA&#x2F;CD 802.11局域网的媒体接入控制协议CSMA&#x2F;CA   数据链路层的互连设备 网桥和交换机的工作原理 集线器（物理层互连">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223192133384.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223192140267.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223192152571.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223191839493.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223201931998.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223202058550.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223202723113.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223204303848.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223204715481.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223205244999.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223210433829.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223210734116.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223212037053.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223212429760.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223213523832.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223213549164.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223213306802.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223214152142.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223214444887.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223214524571.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223214646651.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223215825423.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223220532951.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223220351796.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223221000871.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223221223232.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223223618234.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223224356669.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223224636426.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223224435312.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223224918819.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223224857281.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223225119798.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223225508339.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223225934328.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223225958064.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223231303860.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223231402815.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223231435617.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223231856359.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223231737275.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223232340327.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223233141476.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223233901272.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223234006600.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223234934789.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211224160316693.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211224161921276.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211224162030182.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211224162201886.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211224162227765.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211224162805563.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211224162851613.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211224163838760.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211224163853497.png">
+<meta property="og:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211224164938811.png">
+<meta property="article:published_time" content="2022-01-03T13:54:00.000Z">
+<meta property="article:modified_time" content="2022-01-22T01:43:36.351Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223192133384.png">
+  
+  
+  <title>计算机网络——数据链路层 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.14","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>GluckHuang&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/bg/bg1.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="计算机网络——数据链路层">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-01-03 21:54" pubdate>
+        2022年1月3日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      37 分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">计算机网络——数据链路层</h1>
+            
+            <div class="markdown-body">
+              <p>说明：部分图源自B站—计算机网络微课堂，侵删</p>
+<h1 id="第三章-数据链路层"><a href="#第三章-数据链路层" class="headerlink" title="第三章 数据链路层"></a>第三章 数据链路层</h1><h2 id="3-1-数据链路层概述"><a href="#3-1-数据链路层概述" class="headerlink" title="3.1 数据链路层概述"></a>3.1 数据链路层概述</h2><blockquote>
+<p><strong>总结</strong>：</p>
+<ul>
+<li>数据链路层在网络体系结构中的地位</li>
+<li>使用点对点信道的数据链路层<ul>
+<li>三个重要问题：封装成帧、差错检测、可靠传输</li>
+</ul>
+</li>
+<li>使用广播信道的数据链路层<ul>
+<li>共享式以太网的媒体接入控制协议CSMA/CD</li>
+<li>802.11局域网的媒体接入控制协议CSMA/CA</li>
+</ul>
+</li>
+<li>数据链路层的互连设备<ul>
+<li>网桥和交换机的工作原理</li>
+<li>集线器（物理层互连设备）与交换机的区别</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h2 id="3-2-封装成帧"><a href="#3-2-封装成帧" class="headerlink" title="3.2 封装成帧"></a>3.2 封装成帧</h2><blockquote>
+<ul>
+<li><p>封装成帧是指数据链路层给上层交付的协议数据单元添加帧头和帧尾使之成为帧。</p>
+<ul>
+<li>帧头和帧尾中包含有重要的控制信息。</li>
+<li>帧头和帧尾的作用之一就是<strong>帧定界</strong>。</li>
+</ul>
+</li>
+<li><p><strong>透明传输</strong>是指<strong>数据链路层对上层交付的传输数据没有任何限制</strong>，就好像数据链路层不存在一样。</p>
+<ul>
+<li><p>面向字节的物理链路使用<strong>字节填充</strong>（或称字符填充）的方法实现透明传输。</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223192133384.png" srcset="/img/loading.gif" lazyload alt="image-20211223192133384"></p>
+</li>
+<li><p>面向比特的物理链路使用<strong>比特填充</strong>的方法实现透明传输。</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223192140267.png" srcset="/img/loading.gif" lazyload alt="image-20211223192140267"></p>
+</li>
+</ul>
+</li>
+<li><p>为了提高帧的传输效率，应当使<strong>帧的数据部分的长度尽可能大些</strong>。</p>
+</li>
+<li><p>考虑到差错控制等多种因素，每一种数据链路层协议都规定了帧的数据部分的长度上限，即<strong>最大传送单元MTU</strong>（Maximum Transfer Unit）</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223192152571.png" srcset="/img/loading.gif" lazyload alt="image-20211223192152571"></p>
+</li>
+</ul>
+</blockquote>
+<p>==例1==</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223191839493.png" srcset="/img/loading.gif" lazyload alt="image-20211223191839493"></p>
+<h2 id="3-3-差错检测"><a href="#3-3-差错检测" class="headerlink" title="3.3 差错检测"></a>3.3 差错检测</h2><blockquote>
+<p><strong>总结</strong>：</p>
+<ul>
+<li><strong>检错码</strong>只能检测出帧在传输过程中出现了差错，但并不能定位错误，因此<strong>无法纠正错误</strong>。</li>
+<li>要想纠正传输中的差错，可以使用冗余信息更多的<strong>纠错码</strong>进行<strong>前向纠错</strong>。但纠错码的开销比较大，在<strong>计算机网络中较少使用</strong>。</li>
+<li>循环冗余校验<strong>CRC</strong>有很好的检错能力（<strong>漏检率非常低</strong>），虽然计算比较复杂，但非常<strong>易于用硬件实现</strong>，因此被<strong>广泛应用于数据链路层</strong>。</li>
+<li>在计算机网络中通常采用我们后续课程中将要讨论的<strong>检错重传方式来纠正传输中的差错</strong>，<strong>或者仅仅是丢弃检测到差错的帧</strong>，这取决于数据链路层向其上层提供的是可靠传输服务还是不可靠传输服务。</li>
+</ul>
+</blockquote>
+<p>==例1==</p>
+<img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223201931998.png" srcset="/img/loading.gif" lazyload alt="image-20211223201931998"  />
+
+<p>==例2==</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223202058550.png" srcset="/img/loading.gif" lazyload alt="image-20211223202058550"></p>
+<h2 id="3-4-可靠传输"><a href="#3-4-可靠传输" class="headerlink" title="3.4 可靠传输"></a>3.4 可靠传输</h2><h3 id="3-4-1-可靠传输的基本概念"><a href="#3-4-1-可靠传输的基本概念" class="headerlink" title="3.4.1 可靠传输的基本概念"></a>3.4.1 可靠传输的基本概念</h3><blockquote>
+<p><strong>总结</strong>：</p>
+<ul>
+<li><p>使用<strong>差错检测技术</strong>（例如循环冗余校验CRC），接收方的数据链路层就可检测出帧在传输过程中是否产生了<strong>误码</strong>（比特错误）</p>
+</li>
+<li><p>数据链路层向上层提供的服务类型</p>
+<ul>
+<li><strong>不可靠传输服务</strong>：<strong>仅仅丢弃有误码的帧</strong>，其他什么也不做;</li>
+<li><strong>可靠传输服务</strong>：想办法实现<strong>发送端发送什么，接收端就收到什么</strong>。</li>
+</ul>
+</li>
+<li><p>一般情况下，<strong>有线链路</strong>的误码率比较低，为了减小开销，并<strong>不要求数据链路层</strong>向上提供<strong>可靠</strong>传输服务。即使出现了误码，可靠传输的问题由其上层处理。</p>
+</li>
+<li><p><strong>无线链路</strong>易受干扰，误码率比较高，因此<strong>要求数据链路层</strong>必须向上层提供可靠传输服务。</p>
+</li>
+<li><p><strong>比特差错</strong>只是传输差错中的一种。</p>
+</li>
+<li><p>从整个计算机网络体系结构来看，传输差错还包括<strong>分组丢失</strong>、<strong>分组失序</strong>以及<strong>分组重复</strong>。</p>
+</li>
+<li><p>分组丢失、分组失序以及分组重复这些传输差错，一般不会出现在数据链路层，而会出现在其上层。</p>
+</li>
+<li><p><strong>可靠传输服务并不仅局限于数据链路层</strong>，其他各层均可选择实现可靠传输。</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223202723113.png" srcset="/img/loading.gif" lazyload alt="image-20211223202723113"></p>
+</li>
+<li><p>可靠传输的实现比较复杂，开销也比较大，是否使用可靠传输取决于应用需求。</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="3-4-2-停止-等待协议"><a href="#3-4-2-停止-等待协议" class="headerlink" title="3.4.2 停止-等待协议"></a>3.4.2 停止-等待协议</h3><blockquote>
+<p><strong>总结</strong>：</p>
+<ul>
+<li>接收端检测到数据分组有误码时，将其丢弃并等待发送方的超时重传，但对于误码率较高的点对点链路，为使发送方<strong>尽早重传</strong>，也可<strong>给发送方发送NAK分组</strong>。</li>
+<li>为了让接收方能够判断所收到的数据分组是否是重复的，需要给<strong>数据分组编号</strong>。由于停止-等待协议的停等特性，<strong>只需1个比特编号</strong>就够了，即编号0和1。</li>
+<li>为了让发送方能够判断所收到的ACK分组是否是重复的，需要给<strong>ACK分组编号</strong>，所用比特数量<strong>与数据分组编号所用比特数量一样</strong>。数据链路层一般不会出现ACK分组迟到的情况，因此在<strong>数据链路层实现停止-等待协议可以不用给ACK分组编号</strong>。</li>
+<li>超时计时器设置的<strong>重传时间</strong>应仔细选择。一般可将重传时间选为<strong>略大于“从发送方到接收方的平均往返时间”</strong><ul>
+<li>在数据链路层点对点的往返时间比较确定，重传时间比较好设定。</li>
+<li>然而在运输层，由于端到端往返时间非常不确定，设置合适的重传时间有时并不容易。</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223204303848.png" srcset="/img/loading.gif" lazyload alt="image-20211223204303848"></p>
+<ul>
+<li><strong>当往返时延RTT远大于数据帧发送时延TD时（例如使用卫星链路），信道利用率非常低。</strong></li>
+<li>若出现重传，则对于传送有用的数据信息来说，信道利用率还要降低。</li>
+<li>为了克服停止-等待协议信道利用率很低的缺点，就产生了另外两种协议，即后退N帧协议GBN和选择重传协议SR。</li>
+</ul>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223204715481.png" srcset="/img/loading.gif" lazyload alt="image-20211223204715481"></p>
+</blockquote>
+<p>==例1==</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223205244999.png" srcset="/img/loading.gif" lazyload alt="image-20211223205244999"></p>
+<h3 id="3-4-3-回退N帧协议"><a href="#3-4-3-回退N帧协议" class="headerlink" title="3.4.3 回退N帧协议"></a>3.4.3 回退N帧协议</h3><blockquote>
+<p><strong>总结</strong>：</p>
+<ul>
+<li>回退N帧协议在流水线传输的基础上利用发送窗囗来限制发送方连续发送数据分组的数量，是一种连续ARQ协议。</li>
+<li>在协议的工作过程中发送窗囗和接收窗口不断向前滑动，因此这类协议又称为滑动窗回协议。</li>
+<li>由于回退N帧协议的特性，当通信线路质量不好时，其信道利用率不比停止-等待协议高。</li>
+</ul>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223210433829.png" srcset="/img/loading.gif" lazyload alt="image-20211223210433829"></p>
+</blockquote>
+<p>==例1==</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223210734116.png" srcset="/img/loading.gif" lazyload alt="image-20211223210734116"></p>
+<h3 id="3-4-4-选择重传协议"><a href="#3-4-4-选择重传协议" class="headerlink" title="3.4.4 选择重传协议"></a>3.4.4 选择重传协议</h3><blockquote>
+<p><strong>总结</strong>：</p>
+<ul>
+<li><strong>回退N帧协议</strong>的接收窗口尺寸<strong>WR只能等于1</strong>，因此<strong>接收方只能按序接收正确到达的数据分组。</strong></li>
+<li>一个数据分组的误码就会导致其后续多个数据分组不能被接收方按序接收而丟弃(尽管它们无乱序和误码)。这必然会造成发送方对这些数据分组的超时重传，显然这是对通信资源的极大浪费。</li>
+<li>为了进一步提高性能，可设法只重传岀现误码的数据分组。因此，接收窗口的尺寸<strong>WR不应再等于1(而应大于1)<strong>，以便</strong>接收方先收下失序到达但无误码并且序号落在接收窗口内的那些数据分组</strong>，等到所缺分组收齐后再一并送交上层。这就是<strong>选择重传协议</strong>。</li>
+</ul>
+<blockquote>
+<p>注意：</p>
+<p><strong>选择重传协议</strong>为了使发送方仅重传出现差错的分组，接收方<strong>不能再采用累积确认</strong>，而需要对每个正确接收到的数据分组进行<strong>逐一确认</strong>!</p>
+</blockquote>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223212037053.png" srcset="/img/loading.gif" lazyload alt="image-20211223212037053"></p>
+</blockquote>
+<p>==例1==</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223212429760.png" srcset="/img/loading.gif" lazyload alt="image-20211223212429760"></p>
+<h2 id="3-5-点对点协议PPP"><a href="#3-5-点对点协议PPP" class="headerlink" title="3.5 点对点协议PPP"></a>3.5 点对点协议PPP</h2><blockquote>
+<p><strong>总结</strong>：</p>
+<ul>
+<li>PPP协议的标准文档[RFC1661，RFC1662]。</li>
+<li>PPP协议为在点对点链路传输各种协议数据报提供了一个标准方法，主要由以下三部分构成:<ul>
+<li>对各种协议数据报的封装方法(封装成帧)</li>
+<li>链路控制协议LCP<ul>
+<li>用于建立、配置以及测试数据链路的连接</li>
+</ul>
+</li>
+<li>一套网络控制协议NCPs<ul>
+<li>其中的每一个协议支持不同的网络层协议</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>PPP帧的透明传输<ul>
+<li>面向字节的异步链路使用字节填充法(插入转义字符)</li>
+<li>面向比特的同步链路使用比特填充法(零比特填充)</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223213523832.png" srcset="/img/loading.gif" lazyload alt="image-20211223213523832"></p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223213549164.png" srcset="/img/loading.gif" lazyload alt="image-20211223213549164"></p>
+<ul>
+<li>PPP协议差错检测<ul>
+<li>使用循环冗余校验CRC来计算FCS的值，生成多项式为CRC-CCITT=X^16+X^12+x^5+1</li>
+<li>接收方每收到一个PPP帧，就进行CRC检验。若CRC检验正确，就收下这个帧;反之，就丢弃这个帧。使用PPP的数据链路层<strong>向上不是供可靠传输服务</strong>。</li>
+</ul>
+</li>
+<li>PPP协议的工作状态</li>
+</ul>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223213306802.png" srcset="/img/loading.gif" lazyload alt="image-20211223213306802"></p>
+</blockquote>
+<h2 id="3-6-媒体接入控制"><a href="#3-6-媒体接入控制" class="headerlink" title="3.6 媒体接入控制"></a>3.6 媒体接入控制</h2><h3 id="3-6-1-媒体接入控制的基本概念"><a href="#3-6-1-媒体接入控制的基本概念" class="headerlink" title="3.6.1 媒体接入控制的基本概念"></a>3.6.1 媒体接入控制的基本概念</h3><blockquote>
+<p><strong>总结</strong>：</p>
+<p>共享信道要着重考虑的一个问题就是如何协调多个发送和接收站点对一个共享传输媒体的占用，即<strong>媒体接入控制MAC</strong>( <strong>M</strong>edium <strong>A</strong>ccess <strong>C</strong>ontrol)。</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223214152142.png" srcset="/img/loading.gif" lazyload alt="image-20211223214152142"></p>
+<blockquote>
+<p>随着技术的发展，交换技术的成熟和成本的降低，具有更高性能的使用<br>点对点链路和链路层交换机的交换式局域网在有线领域已完全取代了共享式局域网，但由于无线信道的广播天性，无线局域网仍然使用的是共享媒体技术。</p>
+</blockquote>
+</blockquote>
+<h3 id="3-6-2-静态划分信道"><a href="#3-6-2-静态划分信道" class="headerlink" title="3.6.2 静态划分信道"></a>3.6.2 静态划分信道</h3><blockquote>
+<p><strong>总结</strong>：</p>
+<ul>
+<li>频分复用FDM</li>
+</ul>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223214444887.png" srcset="/img/loading.gif" lazyload alt="image-20211223214444887"></p>
+<ul>
+<li>时分复用TDM</li>
+</ul>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223214524571.png" srcset="/img/loading.gif" lazyload alt="image-20211223214524571"></p>
+<ul>
+<li>波分复用WDM</li>
+</ul>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223214646651.png" srcset="/img/loading.gif" lazyload alt="image-20211223214646651"></p>
+<ul>
+<li>码分复用CDM</li>
+</ul>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223215825423.png" srcset="/img/loading.gif" lazyload alt="image-20211223215825423"></p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223220532951.png" srcset="/img/loading.gif" lazyload alt="image-20211223220532951"></p>
+</blockquote>
+<p>==例1==</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223220351796.png" srcset="/img/loading.gif" lazyload alt="image-20211223220351796"></p>
+<p>==例2==</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223221000871.png" srcset="/img/loading.gif" lazyload alt="image-20211223221000871"></p>
+<p>==例3==</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223221223232.png" srcset="/img/loading.gif" lazyload alt="image-20211223221223232"></p>
+<h3 id="3-6-3-动态接入控制——CSMA-CD"><a href="#3-6-3-动态接入控制——CSMA-CD" class="headerlink" title="3.6.3 动态接入控制——CSMA_CD"></a>3.6.3 动态接入控制——CSMA_CD</h3><blockquote>
+<p><strong>总结</strong>：</p>
+<ul>
+<li><p>CSMA/CD协议的工作原理</p>
+<ul>
+<li>多点接入MA：多个主机连接在一条总线上，竟争使用总线；</li>
+<li>载波监听CS：发送帧前先检测总线，若总线空闲96比特时间，则立即发送；若总线忙，则持续检测总线直到总线空闲96比特时间后再重新发送；</li>
+<li>碰撞检测CD：边发送边检测碰撞。若检测到碰撞，则立即停止发送，退避一設随机时间后再重新发送。</li>
+<li>上述过程可比喻为：先听后说，边听边说；一旦冲突，立即停说；等待时机，从新再说。</li>
+</ul>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223223618234.png" srcset="/img/loading.gif" lazyload alt="image-20211223223618234"></p>
+</li>
+<li><p>使用 CSMA/CD协议的以太网的争用期(碰撞窗口)</p>
+<ul>
+<li>发送帧的主机显多经过以太网端到端往返传播时延2t这么长时间，就可检测到本次传输是否发生了碰撞，2t称为<strong>争用期</strong>；</li>
+<li>经过争用期这段时间还没有检测到碰撞，才能肯定这次发送不会发生碰撞；</li>
+<li>以太网规定2t的取值为512比特时间（即发送512比特所耗费的时间），对于10Mbps的以太网，2t为51.21μs</li>
+</ul>
+</li>
+<li><p>使用 CSMA/CD协议的以太网的最小帧长和最大帧长</p>
+<ul>
+<li><p><strong>最小帧长 = 争用期 × 信道带宽</strong>（数据发送速率），对于10Mbps的传统以太网，其争用期为51.2μs，因此最小帧长为512b，即64字节;</p>
+</li>
+<li><p>以太网的最小帧长确保了主机可在帧发送完成之前就检测到该帧的发送过程中是否遭遥了碰撞。如果检测到碰撞，则停止发送帧的部分，退避一段随机时间后，重新发送该帧；</p>
+</li>
+<li><p>为了防止主机长时间占用总线，以太网的帧也不能太长：以太网V2的MAC帧最大长度为1518字节（1500字节数据载荷，18字节首尾字段）；插入VLAN标记的802.1Q帧最大长度为1522字节（1500字节据载荷，22字节首尾字段）；</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223224356669.png" srcset="/img/loading.gif" lazyload alt="image-20211223224356669"></p>
+</li>
+</ul>
+</li>
+<li><p>CSMA/CD协议使用的截断二进制指数退避算法</p>
+<ul>
+<li><p>随机退避时间 = 争用期2t × 随机数r，其中r从离散的整数集合{0，1，…，(2^k-1)}中随机取出一个，k=Min[重传次数，10];</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223224636426.png" srcset="/img/loading.gif" lazyload alt="image-20211223224636426"></p>
+</li>
+<li><p>当传达<strong>16</strong>次仍不能成功时，这表明同时打算发送数据的主机太多以至于连续发生碰撞，则去弃该帧并向高层报告。</p>
+</li>
+</ul>
+</li>
+<li><p>以太网的信道利用率</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223224435312.png" srcset="/img/loading.gif" lazyload alt="image-20211223224435312"></p>
+</li>
+</ul>
+<blockquote>
+<p>CSMA/CD协议曾经用于各种总线结构以太网和双绞线以太网的早期版本中。<br>现在的以太网基于交换机和全双工连接,不会有碰撞,因此没有必要使用CSMA/CD协议。</p>
+</blockquote>
+</blockquote>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223224918819.png" srcset="/img/loading.gif" lazyload alt="image-20211223224918819"></p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223224857281.png" srcset="/img/loading.gif" lazyload alt="image-20211223224857281"></p>
+<p>==例1==</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223225119798.png" srcset="/img/loading.gif" lazyload alt="image-20211223225119798"></p>
+<p>==例2==</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223225508339.png" srcset="/img/loading.gif" lazyload alt="image-20211223225508339"></p>
+<p>==例3==</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223225934328.png" srcset="/img/loading.gif" lazyload alt="image-20211223225934328"></p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223225958064.png" srcset="/img/loading.gif" lazyload alt="image-20211223225958064"></p>
+<h3 id="3-6-4-动态接入控制——CSMA-CA"><a href="#3-6-4-动态接入控制——CSMA-CA" class="headerlink" title="3.6.4 动态接入控制——CSMA_CA"></a>3.6.4 动态接入控制——CSMA_CA</h3><blockquote>
+<p><strong>总结</strong>：</p>
+<ul>
+<li>802.11无线局域网在MAC层使用 CSMA/CA协议,以尽量减小碰撞发送的概率。不能使用CSMA/CD协议的原因是在无线局域网中无法实现碰撞检测。在使用 CSMA/CA协议的同时，还使用停止-等待协议来实现可靠传输。</li>
+<li>为了尽可能地避免各种可能的碰撞，CSMA/CA协议采用了一种不同于 CSMA/CD协议的退避算法。当要发送帧的站点检测到信道从忙态转为空闲时，都要执行退避算法。</li>
+<li>802.11标准规定,所有的站在完成发送后,必须再等待一段帧间间隔时间才能发送下一帧。帧间间隔的长短取决于该站要发送的帧的优先级。</li>
+<li>在802.11无线局域网的MAC帧首部中有一个持续期字段，用来填入在本帧结束后还要占用信道多久时间，其他站点通过该字段可实现虚拟载波监听。</li>
+<li>802.11标准允许要发送数据的站点对信道进行预约，即在发送数据帧之前先发送请求发送RTS帧。在收到响应允许发送CTS帧后，就可发送数据帧。</li>
+</ul>
+</blockquote>
+<p>==例1==</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223231303860.png" srcset="/img/loading.gif" lazyload alt="image-20211223231303860"></p>
+<p>==例2==</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223231402815.png" srcset="/img/loading.gif" lazyload alt="image-20211223231402815"></p>
+<p>==例3==</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223231435617.png" srcset="/img/loading.gif" lazyload alt="image-20211223231435617"></p>
+<h2 id="3-7-MAC地址、IP地址及ARP协议"><a href="#3-7-MAC地址、IP地址及ARP协议" class="headerlink" title="3.7 MAC地址、IP地址及ARP协议"></a>3.7 MAC地址、IP地址及ARP协议</h2><blockquote>
+<p><strong>总结</strong>：</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223231856359.png" srcset="/img/loading.gif" lazyload alt="image-20211223231856359"></p>
+</blockquote>
+<h3 id="3-7-1-MAC地址"><a href="#3-7-1-MAC地址" class="headerlink" title="3.7.1 MAC地址"></a>3.7.1 MAC地址</h3><blockquote>
+<p><strong>总结</strong>：</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223231737275.png" srcset="/img/loading.gif" lazyload alt="image-20211223231737275"></p>
+</blockquote>
+<p>==例1==</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223232340327.png" srcset="/img/loading.gif" lazyload alt="image-20211223232340327"></p>
+<h3 id="3-7-2-IP地址"><a href="#3-7-2-IP地址" class="headerlink" title="3.7.2 IP地址"></a>3.7.2 IP地址</h3><blockquote>
+<p><strong>总结</strong>：</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223233141476.png" srcset="/img/loading.gif" lazyload alt="image-20211223233141476"></p>
+</blockquote>
+<p>==例1==</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223233901272.png" srcset="/img/loading.gif" lazyload alt="image-20211223233901272"></p>
+<h3 id="3-7-3-ARP协议"><a href="#3-7-3-ARP协议" class="headerlink" title="3.7.3 ARP协议"></a>3.7.3 ARP协议</h3><blockquote>
+<p><strong>总结</strong>：</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223234006600.png" srcset="/img/loading.gif" lazyload alt="image-20211223234006600"></p>
+</blockquote>
+<h2 id="3-8-集线器与交换机的区别"><a href="#3-8-集线器与交换机的区别" class="headerlink" title="3.8 集线器与交换机的区别"></a>3.8 集线器与交换机的区别</h2><blockquote>
+<p><strong>总结</strong>：</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211223234934789.png" srcset="/img/loading.gif" lazyload alt="image-20211223234934789"></p>
+</blockquote>
+<h2 id="3-9-以太网交换机自学习和转发帧的过程"><a href="#3-9-以太网交换机自学习和转发帧的过程" class="headerlink" title="3.9 以太网交换机自学习和转发帧的过程"></a>3.9 以太网交换机自学习和转发帧的过程</h2><blockquote>
+<p><strong>总结</strong>：</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211224160316693.png" srcset="/img/loading.gif" lazyload alt="image-20211224160316693"></p>
+</blockquote>
+<p>==例1==</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211224161921276.png" srcset="/img/loading.gif" lazyload alt="image-20211224161921276"></p>
+<p>==例2==</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211224162030182.png" srcset="/img/loading.gif" lazyload alt="image-20211224162030182"></p>
+<p>==例3==</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211224162201886.png" srcset="/img/loading.gif" lazyload alt="image-20211224162201886"></p>
+<h2 id="3-10-以太网交换机的生成树协议STP"><a href="#3-10-以太网交换机的生成树协议STP" class="headerlink" title="3.10 以太网交换机的生成树协议STP"></a>3.10 以太网交换机的生成树协议STP</h2><blockquote>
+<p><strong>总结</strong>：</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211224162227765.png" srcset="/img/loading.gif" lazyload alt="image-20211224162227765"></p>
+</blockquote>
+<h2 id="3-11-虚拟局域网VLAN"><a href="#3-11-虚拟局域网VLAN" class="headerlink" title="3.11 虚拟局域网VLAN"></a>3.11 虚拟局域网VLAN</h2><h3 id="3-11-1-虚拟局域网VLAN概述"><a href="#3-11-1-虚拟局域网VLAN概述" class="headerlink" title="3.11.1 虚拟局域网VLAN概述"></a>3.11.1 虚拟局域网VLAN概述</h3><blockquote>
+<p><strong>总结</strong>：</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211224162805563.png" srcset="/img/loading.gif" lazyload alt="image-20211224162805563"></p>
+</blockquote>
+<h3 id="3-11-2-虚拟局域网VLAN的实现机制"><a href="#3-11-2-虚拟局域网VLAN的实现机制" class="headerlink" title="3.11.2 虚拟局域网VLAN的实现机制"></a>3.11.2 虚拟局域网VLAN的实现机制</h3><blockquote>
+<p><strong>总结</strong>：</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211224162851613.png" srcset="/img/loading.gif" lazyload alt="image-20211224162851613"></p>
+</blockquote>
+<p>==例1==</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211224163838760.png" srcset="/img/loading.gif" lazyload alt="image-20211224163838760"></p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211224163853497.png" srcset="/img/loading.gif" lazyload alt="image-20211224163853497"></p>
+<p>==拓展==</p>
+<p><img src="https://hyx-pic.oss-cn-beijing.aliyuncs.com/img/image-20211224164938811.png" srcset="/img/loading.gif" lazyload alt="image-20211224164938811"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%A4%A7%E4%B8%89%E4%B8%8A%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">大三上期末复习</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%A4%A7%E4%B8%89%E4%B8%8A%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/01/03/%E8%AE%A1%E7%BD%91_4.%E7%BD%91%E7%BB%9C%E5%B1%82/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">计算机网络——网络层</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/01/03/%E8%AE%A1%E7%BD%91_5.%E8%BF%90%E8%BE%93%E5%B1%82/">
+                        <span class="hidden-mobile">计算机网络——运输层</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
